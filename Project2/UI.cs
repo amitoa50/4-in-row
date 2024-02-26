@@ -58,5 +58,50 @@ namespace Project2
             }
             Console.Write(gameBoard);
         }
+        public bool Turn(Player player, Board gameBoard)
+        {
+            int convertedInputToNumber;
+            bool isTurnOver = false;
+            bool isColumnValid = false;
+            string i_Column;
+
+            while (isTurnOver)
+            {
+                Console.WriteLine("Which column would you like to insert token to?");
+                i_Column = Console.ReadLine();
+                if (i_Column.ToUpper() == "Q")
+                {
+                    break;
+                }
+                else if (int.TryParse(i_Column, out convertedInputToNumber))
+                {
+                    isColumnValid = CheckIfColumnIsValid(convertedInputToNumber, gameBoard);
+                    if (isColumnValid == true)
+                    {
+                        InsertTokenToColumn(player, gameBoard, convertedInputToNumber);
+                        isTurnOver = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Input - Not in range!");
+                        Console.WriteLine($"the range is 1 to {gameBoard.Cols}");
+                        continue;
+                    }
+                }
+            }
+            return isTurnOver;
+
+        }
+        public bool PlayGamePlayerVsPlayer(Player player1, Player player2, Board gameBoard)
+        {
+            bool playersWantAnotherGame = false;
+            bool gameIsOver = false;
+            Player currentPlayer = player1;
+
+            while (gameIsOver)
+            {
+
+            }
+        }
     }
 }

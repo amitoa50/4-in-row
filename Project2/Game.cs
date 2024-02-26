@@ -44,6 +44,34 @@ namespace Project2
             }
             return validInput;
         }
+        public bool CheckIfColumnIsValid(int i_Column, Board gameBoard)
+        {
+            bool columnIsValid = false;
+
+            if(i_Column - 1 <= gameBoard.Cols || i_Column - 1 >= 0)
+            {
+                for (int i = 0; i < gameBoard.Rows; i++)
+                {
+                    if (gameBoard[i, i_Column - 1] == ePlayerColor.Empty)
+                    {
+                        columnIsValid = true;
+                    }
+                }
+            }
+            return columnIsValid;
+        } 
+        public void InsertTokenToColumn(Player player, Board gameBoard, int i_Column) 
+        {
+            for(int i = gameBoard.Rows - 1; i >= 0 ; i--)
+            {
+                if (gameBoard[i, i_Column-1] == ePlayerColor.Empty)
+                {
+                    gameBoard[i, i_Column-1] = player.Color;
+                    break;
+                }
+            }
+        }
+
         public Game(int i_Rows,int i_Cols,int i_PlayAgainst)
         {
             BoardGame = new Board(i_Rows, i_Cols);
@@ -53,6 +81,6 @@ namespace Project2
                 m_Player2 = new Player(ePlayerColor.Green, 0);
             }//to do vs computer
         }
-
+       
     }
 }

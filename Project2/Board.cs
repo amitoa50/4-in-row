@@ -18,6 +18,7 @@ namespace Project2
         public ePlayerColor this[int i_row, int i_col]
         {
             get { return m_GameBoard[i_row, i_col]; }
+            set { m_GameBoard[i_row, i_col] = value; }
         }
         public int Rows
         {
