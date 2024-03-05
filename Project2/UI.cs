@@ -47,7 +47,7 @@ namespace Project2
             bool isColumnValid = false;
             string i_Column;
 
-            while (isTurnOver==false)
+            while (isTurnOver == false)
             {
                 Console.WriteLine("Which column would you like to insert token to?");
                 i_Column = Console.ReadLine();
@@ -87,20 +87,18 @@ namespace Project2
             playersChoice = i_Choice.ToUpper() == "Y";
             return playersChoice;
         }
-
-        
         public static void PlayGamePlayerVsPlayer(Game gameBoard)
         {
-            bool playersWantAnotherGame = true;  
+            bool playersWantAnotherGame = true;
             while (playersWantAnotherGame)
             {
-                
-                gameBoard.IsGameOver = false;  
+
+                gameBoard.IsGameOver = false;
 
                 while (!gameBoard.IsGameOver)
                 {
                     gameBoard.IsGameOver = !Turn(gameBoard.currentPlayer, gameBoard);
-                    gameBoard.ChangePlayerTurn(gameBoard.currentPlayer);
+                    gameBoard.ChangePlayerTurn();
                     gameBoard.checkWinCondition(gameBoard.currentPlayer);
                     Screen.Clear();
                     if (gameBoard.IsGameOver)
@@ -117,65 +115,44 @@ namespace Project2
         public static void PlayGamePlayerVsPc(Game gameBoard)
         {
             bool playersWantAnotherGame = true;
-
-            int token;
-            bool validInput;
-            string userInput;
-
-             while (playersWantAnotherGame)
+            while (playersWantAnotherGame)
             {
-                PrintBoard(gameBoard.BoardGame);
-                validInput = false;
-                while (!validInput)
-                {
-                    Console.Write("Enter your column to put token: ");
-                    userInput = Console.ReadLine();
-                    if (userInput.ToUpper() == "Q")
-                    {
-                        gameBoard.IsGameOver = true;
-                        gameBoard.CurrentPlayer = gameBoard.CurrentPlayer == eCells.Red ? eCells.Yellow : eCells.Red;
-                        break;
-                    }
 
-                    if (int.TryParse(userInput, out token))
+                gameBoard.IsGameOver = false;
+
+                while (!gameBoard.IsGameOver)
+                {
+                    if (gameBoard.currentPlayer.Color == ePlayerColor.Red)
                     {
-                        validInput = gameBoard.TokenInsertion(token);
-                        if (validInput == false)//check valid userInput
+                        gameBoard.IsGameOver = !Turn(gameBoard.currentPlayer, gameBoard);
+
+                    }
+                    else if (gameBoard.currentPlayer.Color == ePlayerColor.Green)
+                    {
+                        gameBoard.PlaySmartPC();
+                    }
+                    gameBoard.checkWinCondition(gameBoard.currentPlayer);
+                    Screen.Clear();
+
+                    if (gameBoard.IsGameOver)
+                    {
+                        if (gameBoard.currentPlayer.Color == ePlayerColor.Empty)
                         {
-                            if (!gameBoard.ValidCol(token - 1))
-                            {
-                                Console.WriteLine($"Invalid Input range, please insert number between 1 to {gameBoard.Cols}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Invalid Input column is full, please insert to a diffrent column");
-                            }
-                            Thread.Sleep(1500);
-                        }
-                        else if (gameBoard.IsGameOver)
-                        {
-                            PrintGameIsfinished(gameBoard);
+                            Console.WriteLine($"It's a DRAW!!");
+                            break;
                         }
                         else
                         {
-                            Screen.Clear();
-                            gameBoard.PlaySmartPC();
-                            if (gameBoard.IsGameOver)
-                            {
-                                PrintGameIsfinished(gameBoard);
-                            }
+                            Console.WriteLine($"Well done!! {gameBoard.currentPlayer.Color} has won!");
+                            gameBoard.ChangePlayerScore(gameBoard.currentPlayer, gameBoard.BoardGame);
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("Invalid input, please try again");
-                    }
+                    PrintBoard(gameBoard.BoardGame);
+                    gameBoard.ChangePlayerTurn();
                 }
+                playersWantAnotherGame = Replay(ref gameBoard);
             }
-
-            IncreaseNumOfWins(gameBoard);
         }
-
         public static bool Replay(ref Game currentGame)
         {
             bool playersWantAnotherGame = true;
@@ -184,7 +161,10 @@ namespace Project2
             playersWantAnotherGame = CheckIfPlayerWantsAnotherGame(i_Choice);
             if (playersWantAnotherGame == true)
             {
-                currentGame.BoardGame = new Board(currentGame.BoardGame.Rows, currentGame.BoardGame.Cols);
+                //currentGame.BoardGame = new Board(currentGame.BoardGame.Rows, currentGame.BoardGame.Cols);
+                Game newGame = new Game(currentGame.BoardGame.Rows, currentGame.BoardGame.Cols, 1); // NEED TO FIX 3RD PARAMETER
+/*                newGame.player1.GamesWon = currentGame.player1.GamesWon; // set property?
+                newGame.player2.GamesWon = currentGame.player2.GamesWon;*/
                 Console.WriteLine("Starting a new game in 3 seconds...");
                 Thread.Sleep(3000);
                 Screen.Clear();
@@ -201,8 +181,8 @@ namespace Project2
         public static void PrintBoard(Board board)
         {
             StringBuilder gameBoard = new StringBuilder();
-            gameBoard.Append(' ',2);
-            for(int i = 1; i < board.Cols; i++)
+            gameBoard.Append(' ', 2);
+            for (int i = 1; i < board.Cols; i++)
             {
                 gameBoard.Append(i).Append(' ', 3); ;
             }
@@ -211,7 +191,7 @@ namespace Project2
             {
                 for (int j = 0; j < board.Cols; j++)
                 {
-                    gameBoard.Append("| ").Append((char)board[i,j]).Append(' ');
+                    gameBoard.Append("| ").Append((char)board[i, j]).Append(' ');
                 }
                 gameBoard.Append('|').AppendLine();
                 gameBoard.Append('=').Append('=', 4 * (board.Cols)).AppendLine();
@@ -222,7 +202,8 @@ namespace Project2
         {
             Game Gameboard = UI.buildGame();
             UI.PrintBoard(Gameboard.BoardGame);
-            UI.PlayGamePlayerVsPlayer(Gameboard);
+            //UI.PlayGamePlayerVsPlayer(Gameboard);
+            UI.PlayGamePlayerVsPc(Gameboard);
             Console.ReadLine();
         }
     }

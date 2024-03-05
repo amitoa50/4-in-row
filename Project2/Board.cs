@@ -22,9 +22,6 @@ namespace Project2
             set { m_EmptyCellsInCol = value; }
         }
 
-            
-            
-
         public ePlayerColor this[int i_row, int i_col]
         {
             get { return m_GameBoard[i_row, i_col]; }
