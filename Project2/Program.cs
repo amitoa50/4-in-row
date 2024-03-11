@@ -11,9 +11,7 @@ namespace Project2
     {
         public static void Main()
         {
-            Game Gameboard = UI.buildGame();
-            UI.PrintBoard(Gameboard.BoardGame);
-            Console.ReadLine();
+            UI.setupGame();
         }
     }
 }
